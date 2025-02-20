@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner DCCP</title>
+
+    <!-- Use a CDN for html5-qrcode -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #reader {
+            width: 300px;
+            max-width: 100%;
+        }
+        #result {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <div id="reader"></div>
+        <div id="result"></div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                document.getElementById('result').innerHTML = "<p>Camera access is not supported in this browser.</p>";
+                return;
+            }
+
+            const scanner = new Html5QrcodeScanner('reader', {
+                qrbox: 250,
+                fps: 10,
+            });
+
+            scanner.render(success, error);
+
+            function success(result) {
+                document.getElementById('result').innerHTML = `
+                    <h2>Success!</h2>
+                    <p><a href="${result}" target="_blank">${result}</a></p>
+                `;
+                scanner.clear();
+                document.getElementById('reader').remove();
+            }
+
+            function error(err) {
+                console.warn("QR Code scan error:", err);
+            }
+        });
+    </script>
+
+</body>
+</html>
